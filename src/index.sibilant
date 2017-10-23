@@ -38,10 +38,12 @@
 
   (pipe repl
         (.on  'result (aprint "result:"))
+        (.on 'result (#-> rl.prompt))
         (.on  'error (aprint "error:"))
         (.on  'log (aprint "log:")))
 
-  (print "awaiting input"))
+  (print "awaiting input")
+  (.prompt rl))
 
 
 

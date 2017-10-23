@@ -95,6 +95,10 @@ var rlConfig = {
   
     console.log("result:", b, ...others);
     return b;
+  })).on("result", (function() {
+    /* src/index.sibilant:41:21 */
+  
+    return rl.prompt(arguments[0]);
   })).on("error", (function(b, ...others) {
     /* node_modules/kit/inc/console.sibilant:10:8 */
   
@@ -106,5 +110,6 @@ var rlConfig = {
     console.log("log:", b, ...others);
     return b;
   }));
-  return console.log("awaiting input");
+  console.log("awaiting input");
+  return rl.prompt();
 })(create(REPL)().start(), readline.createInterface(rlConfig));
