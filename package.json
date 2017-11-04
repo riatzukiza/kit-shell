@@ -1,1 +1,14 @@
-{"name":"kit-shell","version":"1.3.2","bin":{"kit-shell":"./bin/kit-shell"},"scripts":{"clean":"rm -r node_modules","compile":"sibilant ./src/index.sibilant -o ./","test":"sibilant -x ./test.sibilant","clean-compile":"sh ./scripts/clean-compile.sh"},"dependencies":{"kit":"../kit","kit-repl":"../kit-repl-1.2.7"}}
+{"name":"kit-shell",
+ "version":"1.3.2",
+ "bin":{"kit-shell":"./bin/kit-shell"},
+
+ "scripts":{"clean":"rm -r node_modules",
+            "compile":"sibilant ./src/index.sibilant -o ./",
+            "test":"sibilant -x ./test.sibilant",
+            "clean-compile":"sh ./scripts/clean-compile.sh"},
+
+ "dependencies":{"kit":"git+ssh://riatzukiza@192.168.0.150:1250/H/gits/kit",
+                 "kit-loader":"git+ssh://riatzukiza@192.168.0.150:1250/H/gits/kit-loader",
+                 "kit-interface":"git+ssh://riatzukiza@192.168.0.150:1250/H/gits/kit-interface",
+                 "kit-repl":"git+ssh://riatzukiza@192.168.0.150:1250/H/gits/kit-repl#v1.2.7"
+                }}

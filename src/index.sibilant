@@ -11,7 +11,10 @@
 (import-namespace repl)
 
 
-(.include sibilant "kit/header" (.resolve require "./meta"))
+(.include sibilant "kit/header" )
+(.include sibilant "kit-loader/index")
+(.include sibilant (.resolve require "./meta"))
+(.include sibilant "kit-interface/header")
 
 (set module 'filename (pipe (process.cwd) ))
 
