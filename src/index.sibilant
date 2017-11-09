@@ -39,6 +39,8 @@
 
   (.on rl 'line (#-> repl.send))
 
+  (def repl.write ())
+
   (pipe repl
         (.on  'result (aprint "result:"))
         (.on 'result (#-> rl.prompt))
