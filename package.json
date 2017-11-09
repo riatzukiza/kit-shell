@@ -1,6 +1,6 @@
 {
 	"name": "kit-shell",
-	"version": "1.3.3",
+	"version": "1.3.4",
 	"bin": {
 		"kit-shell": "./bin/kit-shell"
 	},
@@ -14,6 +14,6 @@
 		"kit": "git+ssh://riatzukiza@192.168.0.150:1250/H/gits/kit",
 		"kit-loader": "git+ssh://riatzukiza@192.168.0.150:1250/H/gits/kit-loader",
 		"kit-interface": "git+ssh://riatzukiza@192.168.0.150:1250/H/gits/kit-interface",
-		"kit-repl": "git+ssh://riatzukiza@192.168.0.150:1250/H/gits/kit-repl#v1.2.7"
+		"kit-repl": "git+ssh://riatzukiza@192.168.0.150:1250/H/gits/kit-repl"
 	}
 }
