@@ -11,9 +11,9 @@
 		"clean-compile": "sh ./scripts/clean-compile.sh"
 	},
 	"dependencies": {
-		"kit": "git+ssh://riatzukiza@192.168.0.150:1250/H/gits/kit",
-		"kit-loader": "git+ssh://riatzukiza@192.168.0.150:1250/H/gits/kit-loader",
-		"kit-interface": "git+ssh://riatzukiza@192.168.0.150:1250/H/gits/kit-interface",
-		"kit-repl": "git+ssh://riatzukiza@192.168.0.150:1250/H/gits/kit-repl"
+		"kit": "git+ssh://riatzukiza@aaron.kettlelogic.space:1250/H/gits/kit",
+		"kit-loader": "git+ssh://riatzukiza@aaron.kettlelogic.space:1250/H/gits/kit-loader",
+		"kit-interface": "git+ssh://riatzukiza@aaron.kettlelogic.space:1250/H/gits/kit-interface",
+		"kit-repl": "git+ssh://riatzukiza@aaron.kettlelogic.space:1250/H/gits/kit-repl"
 	}
 }
