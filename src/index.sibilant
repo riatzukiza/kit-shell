@@ -21,25 +21,44 @@
 (when (.exists-sync fs "./.sibilant/meta.sibilant")
   (.include sibilant "./.sibilant/meta"))
 
+(require! Path 'path)
+
 (set-globals (sibilant (require 'sibilant))
              (R (require 'ramda))
              process
              module
              exports
-             require
+             (def require (module-path)
+               (require (if (= (first module-path) ".")
+                            (.join Path (process.cwd) module-path))
+                        module-path))
              create extend mixin conditional cond partially-apply-after
              )
 
 (var rl-config (lit (input process.stdin)
                     (output process.stdout)
                     (prompt "#>")))
+(def-curried append-line (path d)
+  (append-file path (+ d "\n")))
+(def-curried append-file (path d)
+  (make-promise
+   (.append-file fs path d (=> (e) (if e (fail e) (success))))))
+
+(def read-history (actor)
+  (print "reading history")
+  (then-do (append-file "./history.sibilant" "")
+           (make-promise
+            (pipe (.create-read-stream fs "./history.sibilant")
+                  (.on  'data (#-> (+ "") actor.send))
+                  (.on  'end success)
+                  (.on  'error fail)))))
 
 (let ((repl (.start ((create REPL))))
       (rl (.create-interface readline rl-config)))
 
-  (.on rl 'line (#-> repl.send))
-
-  (def repl.write ())
+  (pipe (read-history repl)
+        (then-do (pipe rl (.on  'line (#-> repl.send))
+                       (.on 'line (append-line "./history.sibilant")))))
 
   (pipe repl
         (.on  'result (aprint "result:"))
