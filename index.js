@@ -92,36 +92,47 @@ var appendFile = R.curry(((path, d) => {
   })));
 
 }));
+var historyFilePath = "./history.sibilant";
 var readHistory = (function readHistory$(actor) {
-  /* read-history src/index.sibilant:47:0 */
+  /* read-history src/index.sibilant:48:0 */
 
-  console.log("reading history");
-  return appendFile("./history.sibilant", "").then(((nil) => {
+  return console.log("reading history");
+});
+(function(repl, rl) {
+  /* node_modules/kit/inc/scope.sibilant:12:9 */
+
+  appendFile(historyFilePath, "").then(((nil) => {
   	
     return (new Promise(((success, fail) => {
     	
       var resolve = success,
           reject = fail;
-      return fs.createReadStream("./history.sibilant").on("data", (function() {
-        /* src/index.sibilant:52:30 */
+      return fs.createReadStream(historyFilePath).on("data", (function() {
+        /* src/index.sibilant:58:36 */
       
         return actor.send((arguments[0] + ""));
+      })).on("data", (function(b, ...others) {
+        /* node_modules/kit/inc/console.sibilant:10:8 */
+      
+        console.log(b, ...others);
+        return b;
       })).on("end", success).on("error", fail);
     
     })));
   
-  }));
-});
-(function(repl, rl) {
-  /* node_modules/kit/inc/scope.sibilant:12:9 */
-
-  readHistory(repl).then(((nil) => {
+  })).then(((nil) => {
   	
-    return rl.on("line", (function() {
-      /* src/index.sibilant:60:38 */
+    rl.on("line", (function() {
+      /* src/index.sibilant:63:35 */
     
       return repl.send(arguments[0]);
-    })).on("line", appendLine("./history.sibilant"));
+    })).on("line", appendLine(historyFilePath));
+    repl.on("result", (function() {
+      /* src/index.sibilant:66:35 */
+    
+      return rl.prompt(arguments[0]);
+    }));
+    return rl.prompt();
   
   }));
   repl.on("result", (function(b, ...others) {
@@ -129,10 +140,6 @@ var readHistory = (function readHistory$(actor) {
   
     console.log("result:", b, ...others);
     return b;
-  })).on("result", (function() {
-    /* src/index.sibilant:65:21 */
-  
-    return rl.prompt(arguments[0]);
   })).on("error", (function(b, ...others) {
     /* node_modules/kit/inc/console.sibilant:10:8 */
   
@@ -144,6 +151,5 @@ var readHistory = (function readHistory$(actor) {
     console.log("log:", b, ...others);
     return b;
   }));
-  console.log("awaiting input");
-  return rl.prompt();
+  return console.log("awaiting input");
 })(create(REPL)().start(), readline.createInterface(rlConfig));
