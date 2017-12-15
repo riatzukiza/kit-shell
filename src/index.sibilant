@@ -70,9 +70,8 @@
          (.on rl 'line (append-line history-file-path))
 
          (.on repl 'result (#-> rl.prompt))
-
-         (.prompt rl)
-         (print "awaiting input")))
+         (print "awaiting input")
+         (.prompt rl)))
 
   (pipe repl
         (.on  'result (aprint "result:"))
