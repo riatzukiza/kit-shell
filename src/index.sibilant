@@ -35,9 +35,7 @@
              create extend mixin conditional cond partially-apply-after
              )
 
-(var rl-config (lit (input process.stdin)
-                    (output process.stdout)
-                    (prompt "#>")))
+(var rl-config )
 (def-curried append-line (path d)
   (append-file path (+ d "\n")))
 (def-curried append-file (path d)
@@ -50,12 +48,16 @@
   )
 
 (let ((repl (.start ((create REPL))))
-      (rl (.create-interface readline rl-config)))
+      (rl (.create-interface
+           readline
+           (lit (input process.stdin)
+                (output process.stdout)
+                (prompt "#>")))))
 
   (pipe (append-file history-file-path "")
         (then-do (make-promise
                   (pipe (.create-read-stream fs history-file-path)
-                        (.on  'data (#-> (+ "") actor.send))
+                        (.on  'data (#-> (+ "") repl.send))
                         (.on 'data (aprint))
                         (.on  'end success)
                         (.on  'error fail))))
