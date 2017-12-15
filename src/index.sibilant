@@ -35,45 +35,50 @@
              create extend mixin conditional cond partially-apply-after
              )
 
-(var rl-config )
 (def-curried append-line (path d)
   (append-file path (+ d "\n")))
+
 (def-curried append-file (path d)
   (make-promise
    (.append-file fs path d (=> (e) (if e (fail e) (success))))))
+
 (var history-file-path "./history.sibilant")
 
 (def read-history (actor)
   (print "reading history")
   )
+(var identity (=> (a) a))
 
+(def-curried pipe-stream-to-actor ( f actor)
+  (make-promise
+   (pipe (.create-read-stream fs history-file-path)
+         (.on  'data (#-> (+ "") (tap f) actor.send))
+         (.on  'end success)
+         (.on  'error fail)))
+  )
 (let ((repl (.start ((create REPL))))
-      (rl (.create-interface
-           readline
+      (rl (readline.create-interface
            (lit (input process.stdin)
                 (output process.stdout)
                 (prompt "#>")))))
 
   (pipe (append-file history-file-path "")
-        (then-do (make-promise
-                  (pipe (.create-read-stream fs history-file-path)
-                        (.on  'data (#-> (+ "") repl.send))
-                        (.on 'data (aprint))
-                        (.on  'end success)
-                        (.on  'error fail))))
-        (then-do (pipe rl
-                       (.on  'line (#-> repl.send))
+        (then-do (pipe-stream-to-actor (aprint) repl))
+        (then-do
 
-                       (.on 'line (append-line history-file-path)))
-                 (.on repl 'result (#-> rl.prompt))
-                 (.prompt rl)))
+         (.on rl 'line (#-> repl.send))
+         (.on rl 'line (append-line history-file-path))
+
+         (.on repl 'result (#-> rl.prompt))
+
+         (.prompt rl)
+         (print "awaiting input")))
 
   (pipe repl
         (.on  'result (aprint "result:"))
         (.on  'error (aprint "error:"))
         (.on  'log (aprint "log:")))
 
-  (print "awaiting input")
   )
 
 
