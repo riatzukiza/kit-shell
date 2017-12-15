@@ -43,31 +43,36 @@
 (def-curried append-file (path d)
   (make-promise
    (.append-file fs path d (=> (e) (if e (fail e) (success))))))
+(var history-file-path "./history.sibilant")
 
 (def read-history (actor)
   (print "reading history")
-  (then-do (append-file "./history.sibilant" "")
-           (make-promise
-            (pipe (.create-read-stream fs "./history.sibilant")
-                  (.on  'data (#-> (+ "") actor.send))
-                  (.on  'end success)
-                  (.on  'error fail)))))
+  )
 
 (let ((repl (.start ((create REPL))))
       (rl (.create-interface readline rl-config)))
 
-  (pipe (read-history repl)
-        (then-do (pipe rl (.on  'line (#-> repl.send))
-                       (.on 'line (append-line "./history.sibilant")))))
+  (pipe (append-file history-file-path "")
+        (then-do (make-promise
+                  (pipe (.create-read-stream fs history-file-path)
+                        (.on  'data (#-> (+ "") actor.send))
+                        (.on 'data (aprint))
+                        (.on  'end success)
+                        (.on  'error fail))))
+        (then-do (pipe rl
+                       (.on  'line (#-> repl.send))
+
+                       (.on 'line (append-line history-file-path)))
+                 (.on repl 'result (#-> rl.prompt))
+                 (.prompt rl)))
 
   (pipe repl
         (.on  'result (aprint "result:"))
-        (.on 'result (#-> rl.prompt))
         (.on  'error (aprint "error:"))
         (.on  'log (aprint "log:")))
 
   (print "awaiting input")
-  (.prompt rl))
+  )
 
 
 
