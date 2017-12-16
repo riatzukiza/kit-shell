@@ -50,8 +50,10 @@ mixin({
       return require((function() {
         if (modulePath[0] === ".") {
           return Path.join(process.cwd(), modulePath);
+        } else {
+          return modulePath;
         }
-      }).call(this), modulePath);
+      }).call(this));
     
    },
   create,
@@ -61,11 +63,6 @@ mixin({
   cond,
   partiallyApplyAfter
  }, global);
-var rlConfig = { 
-  input:process.stdin,
-  output:process.stdout,
-  prompt:"#>"
- };
 var appendLine = R.curry(((path, d) => {
 	
   return appendFile(path, (d + "\n"));
@@ -94,48 +91,65 @@ var appendFile = R.curry(((path, d) => {
 }));
 var historyFilePath = "./history.sibilant";
 var readHistory = (function readHistory$(actor) {
-  /* read-history src/index.sibilant:48:0 */
+  /* read-history src/index.sibilant:49:0 */
 
   return console.log("reading history");
 });
+var identity = ((a) => {
+	
+  return a;
+
+});
+var pipeStreamToActor = R.curry(((f, actor) => {
+	
+  return (new Promise(((success, fail) => {
+  	
+    var resolve = success,
+        reject = fail;
+    return fs.createReadStream(historyFilePath).on("data", (function() {
+      /* src/index.sibilant:57:21 */
+    
+      return actor.send((function() {
+        /* src/macros/pipe.sibilant:66:9 */
+      
+        f(arguments[0]);
+        return arguments[0];
+      })((arguments[0] + "")));
+    })).on("end", success).on("error", fail);
+  
+  })));
+
+}));
 (function(repl, rl) {
   /* node_modules/kit/inc/scope.sibilant:12:9 */
 
   appendFile(historyFilePath, "").then(((nil) => {
   	
-    return (new Promise(((success, fail) => {
-    	
-      var resolve = success,
-          reject = fail;
-      return fs.createReadStream(historyFilePath).on("data", (function() {
-        /* src/index.sibilant:58:36 */
-      
-        return actor.send((arguments[0] + ""));
-      })).on("data", (function(b, ...others) {
-        /* node_modules/kit/inc/console.sibilant:10:8 */
-      
-        console.log(b, ...others);
-        return b;
-      })).on("end", success).on("error", fail);
+    return pipeStreamToActor((function(b, ...others) {
+      /* node_modules/kit/inc/console.sibilant:10:8 */
     
-    })));
+      console.log(b, ...others);
+      return b;
+    }), repl);
   
   })).then(((nil) => {
   	
     rl.on("line", (function() {
-      /* src/index.sibilant:63:35 */
+      /* src/index.sibilant:71:23 */
     
       return repl.send(arguments[0]);
-    })).on("line", appendLine(historyFilePath));
+    }));
+    rl.on("line", appendLine(historyFilePath));
     repl.on("result", (function() {
-      /* src/index.sibilant:66:35 */
+      /* src/index.sibilant:74:27 */
     
       return rl.prompt(arguments[0]);
     }));
+    console.log("awaiting input");
     return rl.prompt();
   
   }));
-  repl.on("result", (function(b, ...others) {
+  return repl.on("result", (function(b, ...others) {
     /* node_modules/kit/inc/console.sibilant:10:8 */
   
     console.log("result:", b, ...others);
@@ -151,5 +165,8 @@ var readHistory = (function readHistory$(actor) {
     console.log("log:", b, ...others);
     return b;
   }));
-  return console.log("awaiting input");
-})(create(REPL)().start(), readline.createInterface(rlConfig));
+})(create(REPL)().start(), readline.createInterface({ 
+  input:process.stdin,
+  output:process.stdout,
+  prompt:"#>"
+ }));

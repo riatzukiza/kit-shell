@@ -1,2 +1,7 @@
 (print 'yo)
 (require "./test.js")
+(print "so you will remember everything that I say.")
+
+(print 'yo)
+(print "I will remember everything.")
+(require "./test.js")

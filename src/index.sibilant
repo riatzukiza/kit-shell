@@ -30,8 +30,10 @@
              exports
              (def require (module-path)
                (require (if (= (first module-path) ".")
-                            (.join Path (process.cwd) module-path))
-                        module-path))
+                            (.join Path (process.cwd) module-path)
+                            module-path
+                            )
+                        ))
              create extend mixin conditional cond partially-apply-after
              )
 
