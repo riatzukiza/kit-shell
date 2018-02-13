@@ -13,9 +13,6 @@
 ;
 var R = require("ramda");
 var { 
-  Interface
- } = require("kit-interface");
-var { 
   create,
   extend,
   mixin,
@@ -91,7 +88,7 @@ var appendFile = R.curry(((path, d) => {
 }));
 var historyFilePath = "./history.sibilant";
 var readHistory = (function readHistory$(actor) {
-  /* read-history src/index.sibilant:49:0 */
+  /* read-history src/index.sibilant:46:0 */
 
   return console.log("reading history");
 });
@@ -107,7 +104,7 @@ var pipeStreamToActor = R.curry(((f, actor) => {
     var resolve = success,
         reject = fail;
     return fs.createReadStream(historyFilePath).on("data", (function() {
-      /* src/index.sibilant:57:21 */
+      /* src/index.sibilant:54:21 */
     
       return actor.send((function() {
         /* src/macros/pipe.sibilant:66:9 */
@@ -120,9 +117,11 @@ var pipeStreamToActor = R.curry(((f, actor) => {
   })));
 
 }));
+var Reader = repl.Reader;
 (function(repl, rl) {
   /* node_modules/kit/inc/scope.sibilant:12:9 */
 
+  var reader = repl[Reader.symbol];
   appendFile(historyFilePath, "").then(((nil) => {
   	
     return pipeStreamToActor((function(b, ...others) {
@@ -135,13 +134,13 @@ var pipeStreamToActor = R.curry(((f, actor) => {
   })).then(((nil) => {
   	
     rl.on("line", (function() {
-      /* src/index.sibilant:71:23 */
+      /* src/index.sibilant:73:23 */
     
       return repl.send(arguments[0]);
     }));
-    rl.on("line", appendLine(historyFilePath));
+    reader.on("message", appendLine(historyFilePath));
     repl.on("result", (function() {
-      /* src/index.sibilant:74:27 */
+      /* src/index.sibilant:76:27 */
     
       return rl.prompt(arguments[0]);
     }));
@@ -165,7 +164,7 @@ var pipeStreamToActor = R.curry(((f, actor) => {
     console.log("log:", b, ...others);
     return b;
   }));
-})(create(REPL)().start(), readline.createInterface({ 
+})(create(repl.REPL)().start(), readline.createInterface({ 
   input:process.stdin,
   output:process.stdout,
   prompt:"#>"

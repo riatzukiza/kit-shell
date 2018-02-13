@@ -31,11 +31,8 @@
              (def require (module-path)
                (require (if (= (first module-path) ".")
                             (.join Path (process.cwd) module-path)
-                            module-path
-                            )
-                        ))
-             create extend mixin conditional cond partially-apply-after
-             )
+                            module-path)))
+             create extend mixin conditional cond partially-apply-after)
 
 (def-curried append-line (path d)
   (append-file path (+ d "\n")))
@@ -58,18 +55,23 @@
          (.on  'end success)
          (.on  'error fail)))
   )
-(let ((repl (.start ((create REPL))))
+
+(var Reader repl.Reader)
+
+(let ((repl (.start ((create repl.REPL))))
       (rl (readline.create-interface
            (lit (input process.stdin)
                 (output process.stdout)
                 (prompt "#>")))))
+
+  (var reader (get repl Reader.symbol))
 
   (pipe (append-file history-file-path "")
         (then-do (pipe-stream-to-actor (aprint) repl))
         (then-do
 
          (.on rl 'line (#-> repl.send))
-         (.on rl 'line (append-line history-file-path))
+         (.on reader 'message (append-line history-file-path))
 
          (.on repl 'result (#-> rl.prompt))
          (print "awaiting input")
@@ -78,9 +80,4 @@
   (pipe repl
         (.on  'result (aprint "result:"))
         (.on  'error (aprint "error:"))
-        (.on  'log (aprint "log:")))
-
-  )
-
-
-
+        (.on  'log (aprint "log:"))))
