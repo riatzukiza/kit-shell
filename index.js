@@ -26,7 +26,6 @@ var fs = require("fs"),
 var repl = require("kit-repl/js/repl");
 var REPL = repl.REPL;
 sibilant.include("kit/header");
-sibilant.include("kit-loader/index");
 sibilant.include(require.resolve("./meta"));
 sibilant.include("kit-interface/header");
 module.filename = process.cwd();
@@ -88,7 +87,7 @@ var appendFile = R.curry(((path, d) => {
 }));
 var historyFilePath = "./history.sibilant";
 var readHistory = (function readHistory$(actor) {
-  /* read-history src/index.sibilant:46:0 */
+  /* read-history src/index.sibilant:45:0 */
 
   return console.log("reading history");
 });
@@ -104,7 +103,7 @@ var pipeStreamToActor = R.curry(((f, actor) => {
     var resolve = success,
         reject = fail;
     return fs.createReadStream(historyFilePath).on("data", (function() {
-      /* src/index.sibilant:54:21 */
+      /* src/index.sibilant:53:21 */
     
       return actor.send((function() {
         /* src/macros/pipe.sibilant:66:9 */
@@ -134,13 +133,13 @@ var Reader = repl.Reader;
   })).then(((nil) => {
   	
     rl.on("line", (function() {
-      /* src/index.sibilant:73:23 */
+      /* src/index.sibilant:72:23 */
     
       return repl.send(arguments[0]);
     }));
     reader.on("message", appendLine(historyFilePath));
     repl.on("result", (function() {
-      /* src/index.sibilant:76:27 */
+      /* src/index.sibilant:75:27 */
     
       return rl.prompt(arguments[0]);
     }));
