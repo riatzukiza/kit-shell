@@ -42,9 +42,8 @@
 
 (var history-file-path "./history.sibilant")
 
-(def read-history (actor)
-  (print "reading history")
-  )
+(def read-history (actor) (print "reading history"))
+
 (var identity (=> (a) a))
 
 (def-curried pipe-stream-to-actor ( f actor)
@@ -52,10 +51,10 @@
    (pipe (.create-read-stream fs history-file-path)
          (.on  'data (#-> (+ "") (tap f) actor.send))
          (.on  'end success)
-         (.on  'error fail)))
-  )
+         (.on  'error fail))))
 
 (var Reader repl.Reader)
+
 
 (let ((repl (.start ((create repl.REPL))))
       (rl (readline.create-interface
@@ -63,20 +62,19 @@
                 (output process.stdout)
                 (prompt "#>")))))
 
-  (var reader (get repl Reader.symbol))
+  (pipe (.send repl "(init-shell)")
+        (.catch (aprint "failed to meta packages"))
+        (.then (->
+                (var reader (get repl Reader.symbol))
 
-  (pipe (append-file history-file-path "")
-        (then-do (pipe-stream-to-actor (aprint) repl))
-        (then-do
+                (.on rl 'line (#-> repl.send))
+                ;;(.on reader 'message (append-line history-file-path))
 
-         (.on rl 'line (#-> repl.send))
-         (.on reader 'message (append-line history-file-path))
+                (.on repl 'result (#-> rl.prompt))
+                (print "ready for input")
+                (.prompt rl)
 
-         (.on repl 'result (#-> rl.prompt))
-         (print "awaiting input")
-         (.prompt rl)))
-
-  (pipe repl
-        (.on  'result (aprint "result:"))
-        (.on  'error (aprint "error:"))
-        (.on  'log (aprint "log:"))))
+                (pipe repl
+                      (.on  'result (aprint "result:"))
+                      (.on  'error (aprint "error:"))
+                      (.on  'log (aprint "log:")))))))

@@ -1,21 +1,30 @@
 (meta
+ 
 
  (var modules (new Set))
 
  (macro add-to-module-lookup (path)
-        `(let ( (p "/") (inc @ (or path (process.cwd))))
-           (require! 'path)
-           (assign module.paths
-                   [...module.paths
-                    ...(pipe
-                        (.split inc path.sep)
-                        (.map (=> (el)
-                                  (var r (path.join p "node_modules"))
-                                  (assign p (path.join p el))
-                                  r))
-                        (.filter (=> (e) (not (.includes module.paths e))))
-                        )])
-           null))
+      (var token (if path path
+                   '(process.cwd)))
+
+
+      `(let ( (p "/") (inc @token))
+
+         (print "adding"  inc "to module path" )
+         (require! 'path)
+         (assign module.paths
+                 [...module.paths
+                  ...(pipe
+                      (.split inc path.sep)
+                      (.map (=> (el)
+                                (assign p (path.join p el))
+                                (var r (path.join p "node_modules"))
+                                r))
+                      (.filter (=> (e) (not (.includes module.paths e))))
+                      )])
+         ))
+ (add-to-module-lookup)
+
 
  (macro clear-source-cache (...paths)
         (.map paths (=> (p) (delete (get sibilant.source-cache p))))
@@ -46,4 +55,13 @@
          (.map (=> ([p path])
                    (.add modules path)
                    (print "loading" path)
-                   `(include @p))))))
+                   `(include @p)))))
+ (macro init-shell ()
+
+        (print  "meta modules loading")
+
+        (assign sibilant.dir (process.cwd))
+        (print "set sibilant dir to process.cwd")
+        (print "added process.cwd to meta module lookup")
+        (print "meta modules loaded")
+        `(add-to-module-lookup))) 

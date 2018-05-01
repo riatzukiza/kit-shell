@@ -103,7 +103,7 @@ var pipeStreamToActor = R.curry(((f, actor) => {
     var resolve = success,
         reject = fail;
     return fs.createReadStream(historyFilePath).on("data", (function() {
-      /* src/index.sibilant:53:21 */
+      /* src/index.sibilant:52:21 */
     
       return actor.send((function() {
         /* src/macros/pipe.sibilant:66:9 */
@@ -120,48 +120,43 @@ var Reader = repl.Reader;
 (function(repl, rl) {
   /* node_modules/kit/inc/scope.sibilant:12:9 */
 
-  var reader = repl[Reader.symbol];
-  appendFile(historyFilePath, "").then(((nil) => {
-  	
-    return pipeStreamToActor((function(b, ...others) {
-      /* node_modules/kit/inc/console.sibilant:10:8 */
-    
-      console.log(b, ...others);
-      return b;
-    }), repl);
+  return repl.send("(init-shell)").catch((function(b, ...others) {
+    /* node_modules/kit/inc/console.sibilant:10:8 */
   
-  })).then(((nil) => {
+    console.log("failed to meta packages", b, ...others);
+    return b;
+  })).then((() => {
   	
+    var reader = repl[Reader.symbol];
     rl.on("line", (function() {
-      /* src/index.sibilant:72:23 */
+      /* src/index.sibilant:70:30 */
     
       return repl.send(arguments[0]);
     }));
-    reader.on("message", appendLine(historyFilePath));
     repl.on("result", (function() {
-      /* src/index.sibilant:75:27 */
+      /* src/index.sibilant:73:34 */
     
       return rl.prompt(arguments[0]);
     }));
-    console.log("awaiting input");
-    return rl.prompt();
+    console.log("ready for input");
+    rl.prompt();
+    return repl.on("result", (function(b, ...others) {
+      /* node_modules/kit/inc/console.sibilant:10:8 */
+    
+      console.log("result:", b, ...others);
+      return b;
+    })).on("error", (function(b, ...others) {
+      /* node_modules/kit/inc/console.sibilant:10:8 */
+    
+      console.log("error:", b, ...others);
+      return b;
+    })).on("log", (function(b, ...others) {
+      /* node_modules/kit/inc/console.sibilant:10:8 */
+    
+      console.log("log:", b, ...others);
+      return b;
+    }));
   
-  }));
-  return repl.on("result", (function(b, ...others) {
-    /* node_modules/kit/inc/console.sibilant:10:8 */
-  
-    console.log("result:", b, ...others);
-    return b;
-  })).on("error", (function(b, ...others) {
-    /* node_modules/kit/inc/console.sibilant:10:8 */
-  
-    console.log("error:", b, ...others);
-    return b;
-  })).on("log", (function(b, ...others) {
-    /* node_modules/kit/inc/console.sibilant:10:8 */
-  
-    console.log("log:", b, ...others);
-    return b;
   }));
 })(create(repl.REPL)().start(), readline.createInterface({ 
   input:process.stdin,
