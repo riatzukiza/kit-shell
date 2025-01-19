@@ -1,6 +1,6 @@
 {
 	"name": "kit-shell",
-	"version": "1.4.1",
+	"version": "1.4.2",
 	"bin": {
 		"kit-shell": "./bin/kit-shell"
 	},
