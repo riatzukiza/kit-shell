@@ -1,16 +1,3 @@
-
-
-(function(a, b, c) {
-  /* node_modules/kit/inc/core/defs.sibilant:53:9 */
-
-  return foo(this);
-}).bind(this);
-
-
-
-
-
-;
 var R = require("ramda");
 var { 
   create,
@@ -19,15 +6,15 @@ var {
   conditional,
   cond,
   partiallyApplyAfter
- } = require("kit/js/util");
+ } = require("@kit-js/core/js/util");
 var fs = require("fs"),
     sibilant = require("sibilant"),
     readline = require("readline");
-var repl = require("kit-repl/js/repl");
+var repl = require("@kit-js/repl/js/repl");
 var REPL = repl.REPL;
-sibilant.include("kit/header");
+sibilant.include("@kit-js/core/header");
 sibilant.include(require.resolve("./meta"));
-sibilant.include("kit-interface/header");
+sibilant.include("@kit-js/interface/header");
 module.filename = process.cwd();
 (function() {
   if (fs.existsSync("./.sibilant/meta.sibilant")) {
@@ -118,10 +105,10 @@ var pipeStreamToActor = R.curry(((f, actor) => {
 }));
 var Reader = repl.Reader;
 (function(repl, rl) {
-  /* node_modules/kit/inc/scope.sibilant:12:9 */
+  /* node_modules/@kit-js/core/inc/scope.sibilant:12:9 */
 
   return repl.send("(init-shell)").catch((function(b, ...others) {
-    /* node_modules/kit/inc/console.sibilant:10:8 */
+    /* node_modules/@kit-js/core/inc/console.sibilant:10:8 */
   
     console.log("failed to meta packages", b, ...others);
     return b;
@@ -141,17 +128,17 @@ var Reader = repl.Reader;
     console.log("ready for input");
     rl.prompt();
     return repl.on("result", (function(b, ...others) {
-      /* node_modules/kit/inc/console.sibilant:10:8 */
+      /* node_modules/@kit-js/core/inc/console.sibilant:10:8 */
     
       console.log("result:", b, ...others);
       return b;
     })).on("error", (function(b, ...others) {
-      /* node_modules/kit/inc/console.sibilant:10:8 */
+      /* node_modules/@kit-js/core/inc/console.sibilant:10:8 */
     
       console.log("error:", b, ...others);
       return b;
     })).on("log", (function(b, ...others) {
-      /* node_modules/kit/inc/console.sibilant:10:8 */
+      /* node_modules/@kit-js/core/inc/console.sibilant:10:8 */
     
       console.log("log:", b, ...others);
       return b;

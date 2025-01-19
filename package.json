@@ -1,18 +1,20 @@
 {
-	"name": "kit-shell",
-	"version": "1.4.1",
+	"name": "@kit-js/shell",
+    "private":false,
+	"version": "1.5.0",
 	"bin": {
 		"kit-shell": "./bin/kit-shell"
 	},
 	"scripts": {
-		"clean": "rm -r node_modules",
+		"clean": "rm -r node_modules;unlink yarn.lock; unlink package-lock.json",
 		"compile": "sibilant ./src/index.sibilant -o ./",
 		"test": "sibilant -x ./test.sibilant",
 		"clean-compile": "sh ./scripts/clean-compile.sh"
 	},
 	"dependencies": {
-		"kit": "git@github.com:riatzukiza/kit.git",
-		"kit-interface": "git@github.com:riatzukiza/kit-interface.git",
-		"kit-repl": "git@github.com:riatzukiza/kit-repl.git"
+		"@kit-js/core": "*",
+		"@kit-js/interface": "*",
+		"@kit-js/repl": "*",
+		"ramda": "^0.25.0"
 	}
 }

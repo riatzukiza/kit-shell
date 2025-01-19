@@ -1,19 +1,19 @@
 
 (macro set-globals (...body)
        `(mixin (lit ...@body) global))
-(include "kit/header")
+(include "@kit-js/core/header")
 (import-namespace kit)
 
 
 (require! 'fs 'sibilant 'readline)
 
-(include "kit-repl/header")
+(include "@kit-js/repl/header")
 (import-namespace repl)
 
 
-(.include sibilant "kit/header" )
+(.include sibilant "@kit-js/core/header" )
 (.include sibilant (.resolve require "./meta"))
-(.include sibilant "kit-interface/header")
+(.include sibilant "@kit-js/interface/header")
 
 (set module 'filename (pipe (process.cwd) ))
 
